@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0; url=./CUHK-X/index.html">
-    <title>Redirecting to CUHK-X...</title>
+    <title>Redirecting...</title>
     <script>
-        // 立即跳转
-        window.location.href = './CUHK-X/index.html';
+        // 检测当前路径
+        const path = window.location.pathname;
+        
+        // 如果访问 /CUHK-X 或 /CUHK-X/，重定向到 CUHK-X 页面
+        if (path === '/CUHK-X' || path === '/CUHK-X/') {
+            window.location.href = './CUHK-X/index.html';
+        } else {
+            // 否则跳转到实验室主页
+            window.location.href = 'https://aiot.ie.cuhk.edu.hk';
+        }
     </script>
 </head>
 <body>
