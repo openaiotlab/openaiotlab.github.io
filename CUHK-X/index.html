@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUHK-X: Multimodal Dataset for Human Action Recognition, Understanding and Reasoning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ========= CSS Variables ========= */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray-light: #e2e8f0;
+            --gray: #94a3b8;
+            --gray-dark: #475569;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 30px;
+
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.12);
+
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
+        }
+
+        /* ========= General Reset & Layout ========= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.7;
+            font-weight: 400;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary);
+            transition: var(--transition-fast);
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--gray-dark);
+        }
+
+        section {
+            padding: 5rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            display: inline-block;
+        }
+
+        /* ========= Navigation ========= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            padding: 0.7rem 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-dot {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-right: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--gray-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--dark);
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--dark);
+        }
+
+        .nav-links a.active:after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        /* ========= Hero Section ========= */
+        .hero {
+            padding: 10rem 0 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 70%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.05) 0%, rgba(124, 58, 237, 0.03) 70%, transparent 100%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .hero:after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.05) 0%, rgba(124, 58, 237, 0.03) 70%, transparent 100%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            margin-bottom: 1.5rem;
+            font-size: 4rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+
+        .authors {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .affiliation-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .affiliation-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            width: 150px;
+        }
+
+        .affiliation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .affiliation-image {
+            width: 80px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 0.8rem;
+        }
+
+        .affiliation {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .hero-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.9rem 1.8rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--dark);
+            border: 1px solid var(--gray-light);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--dark);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent) 0%, #0ea5e9 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+            color: white;
+        }
+
+        /* ========= Section Styles ========= */
+        .section-light {
+            background-color: white;
+        }
+
+        .section-gray {
+            background-color: #f8fafc;
+        }
+
+        /* ========= Hardware Section ========= */
+        .hardware-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .hardware-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border-top: 4px solid var(--primary);
+        }
+
+        .hardware-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .hardware-item h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* ========= Media Components ========= */
+        .media-container {
+            margin: 2.5rem 0;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+
+        .media-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ========= Benchmark Cards ========= */
+        .benchmark-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .benchmark-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border-top: 6px solid;
+            height: 100%;
+        }
+
+        .benchmark-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .benchmark-card.har {
+            border-color: var(--primary);
+        }
+
+        .benchmark-card.hau {
+            border-color: var(--success);
+        }
+
+        .benchmark-card.harn {
+            border-color: var(--warning);
+        }
+
+        .benchmark-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ========= Dataset Modalities ========= */
+        .modalities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .modality-card {
+            background: white;
+            padding: 1.5rem 1rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .modality-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .modality-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ========= Results Section ========= */
+        .results-grid {
+            display: grid;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .result-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .result-table th {
+            text-align: left;
+            padding: 0.8rem;
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .result-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ========= Citation ========= */
+        .citation-box {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            margin: 2rem 0;
+            position: relative;
+            border-left: 4px solid var(--primary);
+        }
+
+        .citation-box pre {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--dark);
+            border: 1px solid var(--gray-light);
+        }
+
+        /* ========= Footer ========= */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 5rem 0 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links h4 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #cbd5e1;
+            transition: var(--transition-fast);
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* ========= Responsive Styles ========= */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 3rem;
+            }
+
+            h2 {
+                font-size: 2.2rem;
+            }
+
+            .hero {
+                padding: 8rem 0 4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: var(--shadow-lg);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-links a {
+                padding: 0.8rem 0;
+                font-size: 1.1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .benchmark-grid,
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            section {
+                padding: 3rem 0;
+            }
+        }
+
+        /* ========= Animation Keyframes ========= */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-dot">•</span>CUHK-X
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+            <div class="nav-links" id="navLinks">
+                <a href="#abstract" class="active">Abstract</a>
+                <a href="#hardware">Hardware</a>
+                <a href="#benchmarks">Benchmarks</a>
+                <a href="#dataset">Dataset</a>
+                <a href="#data-visualization">Visualization</a>
+                <a href="#results">Results</a>
+                <a href="#citation">Citation</a>
+                <a href="#acknowledgments">Acknowledgments</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content animate-in">
+                <h1 class="animate-in">CUHK-X</h1>
+                <h2 class="hero-subtitle animate-in delay-1">
+                    A Large-Scale Multimodal Dataset and Benchmark for Human Action Recognition, Understanding and Reasoning
+                </h2>
+                <p class="authors animate-in delay-2">
+                    Siyang Jiang, Mu Yuan, Xiang Ji, Bufang Yang, Zeyu Liu, Lilin Xu, Yang Li, Yuting He, Liran Dong, Wenrui Lu,
+                    Zhenyu Yan, Xiaofan Jiang, Wei Gao, Hongkai Chen, Guoliang Xing.
+                </p>
+
+                <div class="affiliation-cards animate-in delay-2">
+                    <div class="affiliation-card">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/CUHK-logo.png" alt="CUHK Logo" class="affiliation-image">
+                        <span class="affiliation">CUHK</span>
+                    </div>
+                    <div class="affiliation-card">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/UIUC-logo.webp" alt="UIUC Logo" class="affiliation-image">
+                        <span class="affiliation">UIUC</span>
+                    </div>
+                    <div class="affiliation-card">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/columbia-logo.png" alt="Columbia University Logo" class="affiliation-image">
+                        <span class="affiliation">Columbia University</span>
+                    </div>
+                    <div class="affiliation-card">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/PITT-logo.webp" alt="Pitt University Logo" class="affiliation-image">
+                        <span class="affiliation">PITT University</span>
+                    </div>
+                    <!-- <div class="affiliation-card">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/ESF-logo.jpg" alt="ESF Sha Tin College Logo" class="affiliation-image">
+                        <span class="affiliation">ESF Sha Tin College</span>
+                    </div> -->
+                </div>
+
+                <div class="hero-links animate-in delay-3">
+                    <a href="../paper/cuhkx.pdf" target="_blank" class="btn btn-primary">📄 Paper</a>
+                    <a href="https://aiot-public-dataset-cuhk-x.cuhkaiot.com/" class="btn btn-secondary">📊 Dataset</a>
+                    <a href="https://github.com/siyang-jiang/CUHK-X" class="btn btn-secondary">💻 Code</a>
+                    <a href="assets/awards/20251104ACPBest_pre.pdf" target="_blank" class="btn btn-accent">🏆 Best Presentation Award</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Abstract Section -->
+    <section id="abstract" class="section-light">
+        <div class="container">
+            <div class="section-header animate-in">
+                <h2>Abstract</h2>
+            </div>
+            <div class="animate-in delay-1">
+                <p>
+                    <strong>CUHK-X</strong> is a comprehensive multimodal dataset containing <strong>58,445 samples</strong> across <strong>seven modalities</strong> designed for human activity recognition, understanding, and reasoning. Unlike existing datasets that focus primarily on recognition tasks, CUHK-X addresses critical gaps by providing the first multimodal dataset specifically designed for Human Action Understanding (HAU) and Human Action Reasoning (HARn).
+                </p>
+                <p>
+                    The dataset was collected from <strong>30 participants</strong> across diverse environments using our novel <strong>ActScene framework</strong> - a prompt-based scene creation approach that leverages Large Language Models (LLMs) to generate logical and spatio-temporal activity descriptions. This ensures both consistency and ecological validity in the collected data.
+                </p>
+                <p>
+                    CUHK-X provides three comprehensive benchmarks: <strong>HAR</strong> (Human Action Recognition), <strong>HAU</strong> (Human Action Understanding), and <strong>HARn</strong> (Human Action Reasoning), encompassing eight distinct evaluation tasks. Our extensive experiments demonstrate significant challenges in cross-subject and cross-domain scenarios, highlighting the dataset's value for advancing robust multimodal human activity analysis.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hardware Section -->
+    <section id="hardware" class="section-gray">
+        <div class="container">
+            <div class="section-header animate-in">
+                <h2>Hardware and Environment Setup</h2>
+            </div>
+            <div class="animate-in delay-1">
+                <p>
+                    CUHK-X was collected using a sophisticated multi-sensor setup ensuring synchronized data capture across all modalities:
+                </p>
+
+                <div class="hardware-grid">
+                    <div class="hardware-item">
+                        <h4>Vzense NYX 650</h4>
+                        <p>RGB-D camera providing color and depth information</p>
+                    </div>
+                    <div class="hardware-item">
+                        <h4>Texas Instruments Radar</h4>
+                        <p>mmWave sensing for privacy-preserving motion detection</p>
+                    </div>
+                    <div class="hardware-item">
+                        <h4>IMU Sensors</h4>
+                        <p>Motion and orientation tracking with high temporal resolution</p>
+                    </div>
+                    <div class="hardware-item">
+                        <h4>Thermal Cameras</h4>
+                        <p>Heat signature analysis for environmental robustness</p>
+                    </div>
+                    <div class="hardware-item">
+                        <h4>Synchronized Recording</h4>
+                        <p>Temporal alignment across all modalities for consistent analysis</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="media-container animate-in delay-2">
+                <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/hardware.png"
+                     alt="Hardware setup showing the multi-sensor configuration">
+            </div>
+
+            <p>
+                We spans a multi-room home and supports three tasks: HAR, HAU (captioning task), and HARn (question
+                answering task), integrating diverse modalities, including RGB, depth, thermal, infrared, IMU, skeleton, and
+                mmWave, to enable robust perception and reasoning in complex indoor contexts.
+            </p>
+            <div class="media-container animate-in delay-2">
+                <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/multi-room.png"
+                     alt="Background" style="width: 50%; height: auto">
+            </div>
+            <p>
+                Layout with room-wise visual annotations (Bedroom, Kitchen, Bathroom, and Living Room) showing corresponding
+                example images and sensor placements. The icon indicates the location of the ambient sensor:
+            </p>
+            <div class="media-container animate-in delay-2">
+                <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/room-env.png"
+                     alt="Background">
+            </div>
+        </div>
+    </section>
+
+    <!-- Benchmarks Section -->
+    <section id="benchmarks" class="section-light">
+        <div class="container">
+            <div class="section-header animate-in">
+                <h2>Benchmarks & Tasks</h2>
+            </div>
+            <p class="animate-in delay-1" style="text-align: center; max-width: 800px; margin: 0 auto 2rem;">
+                CUHK-X provides three comprehensive benchmarks that progressively increase in complexity, from basic recognition to advanced reasoning:
+            </p>
+
+            <div class="benchmark-grid">
+                <div class="benchmark-card har animate-in">
+                    <div class="benchmark-icon">🎯</div>
+                    <h3>HAR - Human Action Recognition</h3>
+                    <p><strong>Objective:</strong> Traditional action classification across modalities</p>
+                    <ul>
+                        <li>Cross-subject evaluation (LOSO protocol)</li>
+                        <li>Cross-domain performance analysis</li>
+                        <li>Long-tail distribution handling</li>
+                        <li>Multimodal fusion strategies</li>
+                    </ul>
+                </div>
+
+                <div class="benchmark-card hau animate-in delay-1">
+                    <div class="benchmark-icon">🧠</div>
+                    <h3>HAU - Human Action Understanding</h3>
+                    <p><strong>Objective:</strong> Comprehend actions through contextual integration</p>
+                    <ul>
+                        <li><strong>Action Captioning:</strong> Generate natural language descriptions</li>
+                        <li><strong>Emotion Analysis:</strong> Identify emotional states</li>
+                        <li><strong>Sequential Reordering:</strong> Organize actions chronologically</li>
+                        <li><strong>Action Selection:</strong> Choose relevant actions from candidates</li>
+                    </ul>
+                </div>
+
+                <div class="benchmark-card harn animate-in delay-2">
+                    <div class="benchmark-icon">🔮</div>
+                    <h3>HARn - Human Action Reasoning</h3>
+                    <p><strong>Objective:</strong> Infer intentions and causal relationships</p>
+                    <ul>
+                        <li><strong>Next Action Prediction:</strong> Predict likely subsequent actions</li>
+                        <li><strong>Temporal Reasoning:</strong> Understand action progression logic</li>
+                        <li><strong>Contextual Inference:</strong> Consider environmental factors</li>
+                        <li><strong>Causal Understanding:</strong> Link actions to intentions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 新增的Novel ActScene Framework部分 -->
+            <div class="animate-in delay-3" style="max-width: 800px; margin: 4rem auto 0;">
+                <h3>Novel ActScene Framework</h3>
+                <p>
+                    Our innovative <strong>ActScene framework</strong> leverages Large Language Models to generate consistent,
+                    logical activity descriptions that participants then perform. This approach ensures:
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                    <div style="background: #f0f9ff; padding: 1.5rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent);">
+                        <strong>Logical Consistency:</strong>
+                        <p style="margin-top: 0.5rem; margin-bottom: 0; color: var(--gray-dark);">Activities follow natural progression and causality</p>
+                    </div>
+                    <div style="background: #f0f9ff; padding: 1.5rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent);">
+                        <strong>Spatio-temporal Coherence:</strong>
+                        <p style="margin-top: 0.5rem; margin-bottom: 0; color: var(--gray-dark);">Actions are contextually appropriate</p>
+                    </div>
+                    <div style="background: #f0f9ff; padding: 1.5rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent);">
+                        <strong>Human-in-the-Loop Validation:</strong>
+                        <p style="margin-top: 0.5rem; margin-bottom: 0; color: var(--gray-dark);">Quality assurance for generated scenarios</p>
+                    </div>
+                    <div style="background: #f0f9ff; padding: 1.5rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent);">
+                        <strong>Scalable Annotation:</strong>
+                        <p style="margin-top: 0.5rem; margin-bottom: 0; color: var(--gray-dark);">Efficient generation of diverse scenarios</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dataset Section -->
+    <section id="dataset" class="section-gray">
+        <div class="container">
+            <div class="section-header animate-in">
+                <h2>Dataset Overview</h2>
+            </div>
+            <div class="animate-in delay-1">
+                <p>
+                    CUHK-X represents a significant advancement in multimodal human activity datasets, featuring:
+                </p>
+                <ul>
+                    <li><strong>Seven Synchronized Modalities:</strong> RGB, Infrared (IR), Depth, Thermal, IMU, mmWave Radar, and Skeleton data</li>
+                    <li><strong>Large-Scale:</strong> 58,445 annotated action samples from 30 diverse participants</li>
+                    <li><strong>Dual Data Structure:</strong> Both singular actions (30,000+ samples) and sequential activities for temporal reasoning</li>
+                    <li><strong>Rich Annotations:</strong> LLM-generated captions with human-in-the-loop validation</li>
+                    <li><strong>Environmental Diversity:</strong> Indoor and outdoor settings with varying conditions</li>
+                </ul>
+
+                <h3 class="animate-in delay-2">Modality Specifications</h3>
+                <div class="modalities-grid animate-in delay-2">
+                    <div class="modality-card">
+                        <div class="modality-icon">🎥</div>
+                        <div><strong>RGB Video</strong><br>Standard color video recordings</div>
+                    </div>
+                    <div class="modality-card">
+                        <div class="modality-icon">📏</div>
+                        <div><strong>Depth</strong><br>3D spatial information from depth cameras</div>
+                    </div>
+                    <div class="modality-card">
+                        <div class="modality-icon">🔥</div>
+                        <div><strong>Thermal</strong><br>Heat signature analysis</div>
+                    </div>
+                    <div class="modality-card">
+                        <div class="modality-icon">🌡️</div>
+                        <div><strong>Infrared (IR)</strong><br>Thermal imaging for lighting robustness</div>
+                    </div>
+                    <div class="modality-card">
+                        <div class="modality-icon">📡</div>
+                        <div><strong>mmWave Radar</strong><br>Privacy-preserving motion detection</div>
+                    </div>
+                    <div class="modality-card">
+                        <div class="modality-icon">🦴</div>
+                        <div><strong>Skeleton</strong><br>3D pose estimation and joint tracking</div>
+                    </div>
+                    <div class="modality-card">
+                        <div class="modality-icon">📱</div>
+                        <div><strong>IMU</strong><br>Inertial Measurement Unit for motion</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dataset Overview Image -->
+            <div class="media-container animate-in delay-3">
+                <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/download.png"
+                     alt="Dataset overview showing modality examples" style="width: 70%; height: auto;">
+            </div>
+
+            <!-- Action Categories and Distribution -->
+            <div class="animate-in delay-4">
+                <h3>Action Categories and Distribution</h3>
+
+                <div style="background: white; border-radius: var(--radius-lg); padding: 2rem; margin: 2rem 0; box-shadow: var(--shadow-md);">
+                    <h4 style="color: var(--primary); margin-bottom: 1.5rem;">Categories</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">Personal Care (6 actions)</div>
+                            <div style="color: var(--gray-dark); font-size: 0.95rem;">Washing face, Brushing teeth, Combing hair, Undressing, Wiping hands, Getting Dressed</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">Eating and Drinking (6 actions)</div>
+                            <div style="color: var(--gray-dark); font-size: 0.95rem;">Drinking, Eating, Grabbing utensils, Pouring, Stirring, Peeling fruit</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">Household (5 actions)</div>
+                            <div style="color: var(--gray-dark); font-size: 0.95rem;">Sweeping, Mopping, Washing dishes, Wiping surface, Folding clothes</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">Working (6 actions)</div>
+                            <div style="color: var(--gray-dark); font-size: 0.95rem;">Typing on a keyboard, Writing, Calling, Checking the time, Reading, Turning a page</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">Socializing and Leisure (5 actions)</div>
+                            <div style="color: var(--gray-dark); font-size: 0.95rem;">Taking a selfie, Playing board games, Watching TV, Using a phone, Listening to the music with headphones</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">Sports and Exercises (9 actions)</div>
+                            <div style="color: var(--gray-dark); font-size: 0.95rem;">Walking, Lunges, Sitting down, Lying down, Standing up, Stretching, Jumping jacks, Squats, Running</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">Caring and Helping (3 actions)</div>
+                            <div style="color: var(--gray-dark); font-size: 0.95rem;">Taking medicine, Checking body temperature, Massaging oneself</div>
+                        </div>
+                    </div>
+
+                    <!-- Action Categories Image -->
+                    <div class="media-container animate-in">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/action.png"
+                             alt="Action categories and distribution" style="width: 50%; height: auto;">
+                    </div>
+                </div>
+
+                <!-- Distribution Section -->
+                <div style="background: white; border-radius: var(--radius-lg); padding: 2rem; margin: 2rem 0; box-shadow: var(--shadow-md);">
+                    <h4 style="color: var(--primary); margin-bottom: 1.5rem;">Distribution</h4>
+
+                    <ul>
+                        <li><strong>Distribution Feature:</strong>> The dataset follows a long-tail distribution (a small number of actions account for a large proportion of occurrences, while most are infrequent), consistent with the common imbalance of real-world datasets.</li>
+                        <li><strong>Category Diversity:</strong> Covers basic daily activities, work-related tasks, household chores, and physical exercises, providing a rich foundation for human activity recognition.</li>
+                        <li><strong>Data Scale</strong>:
+                            <ul>
+                                <li>Each participant contributes over 30 minutes of footage with more than 100 samples.</li>
+                                <li>Vision modality includes 4,029 clips (total duration: 19 hours and 29 minutes).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- Action Frequency Image -->
+                    <div class="media-container animate-in">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/action_frequency.png"
+                             alt="Action frequency">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Visualization Section -->
+    <section id="data-visualization" class="section-light">
+        <div class="container">
+            <div class="section-header animate-in">
+                <h2>Data Visualization</h2>
+            </div>
+            <p class="animate-in delay-1" style="text-align: center; max-width: 800px; margin: 0 auto 2rem;">
+                This is an example that includes seven modalities: RGB, IR, Thermal, Depth, Skeleton, Radar, and IMU, which were recorded at the same time.
+                We have a 9-axis IMU, but we've only shown these data for simplicity.
+            </p>
+
+            <div class="media-container animate-in delay-2">
+                <video controls preload="metadata" style="width: 100%; height: auto; display: block;">
+                    <source src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/videos/all_modality.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results" class="section-gray">
+        <div class="container">
+            <div class="section-header animate-in">
+                <h2>Experimental Results</h2>
+            </div>
+
+            <div class="animate-in delay-1">
+                <h3>Key Findings</h3>
+                <p>Our comprehensive evaluation across the three benchmarks reveals several important insights:</p>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card animate-in">
+                    <h4>🎯 HAR Performance</h4>
+                    <table class="result-table">
+                        <thead>
+                            <tr>
+                                <th>Modality</th>
+                                <th>Accuracy</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1-Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>RGB</td>
+                                <td>90.89%</td>
+                                <td>92.24%</td>
+                                <td>91.02%</td>
+                                <td>91.28%</td>
+                            </tr>
+                            <tr>
+                                <td>Depth</td>
+                                <td>90.46%</td>
+                                <td>91.76%</td>
+                                <td>90.75%</td>
+                                <td>90.93%</td>
+                            </tr>
+                            <tr>
+                                <td>IR</td>
+                                <td>90.22%</td>
+                                <td>91.53%</td>
+                                <td>89.94%</td>
+                                <td>90.46%</td>
+                            </tr>
+                            <tr>
+                                <td>Thermal</td>
+                                <td>92.57%</td>
+                                <td>93.54%</td>
+                                <td>93.50%</td>
+                                <td>93.36%</td>
+                            </tr>
+                            <tr>
+                                <td>mmWave</td>
+                                <td>46.63%</td>
+                                <td>48.29%</td>
+                                <td>46.63%</td>
+                                <td>44.53%</td>
+                            </tr>
+                            <tr>
+                                <td>IMU</td>
+                                <td>45.52%</td>
+                                <td>40.84%</td>
+                                <td>38.00%</td>
+                                <td>38.32%</td>
+                            </tr>
+                            <tr>
+                                <td>Skeleton</td>
+                                <td>79.08%</td>
+                                <td>91.46%</td>
+                                <td>79.08%</td>
+                                <td>84.17%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="result-card animate-in delay-1">
+                    <h4>🧠 HAU Performance Highlights</h4>
+                    These three images represent the results of action selection, emotion analysis, and action sequence, respectively.
+                    <ul>
+                        <li><strong>QwenVL-7B:</strong> Consistently best performer across tasks</li>
+                        <li><strong>VLLaVA-7B:</strong> Strong performance in depth and IR modalities</li>
+                        <li><strong>Emotion Analysis:</strong> Up to 77.77% accuracy with thermal imaging</li>
+                        <li><strong>Sequential Reordering:</strong> 68.5% accuracy for complex temporal reasoning</li>
+                    </ul>
+                    <div class="media-container animate-in delay-3">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/action_selection.png"
+                        alt="action_selection" style="width: 30%; height: auto;">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/emotion_analysis.png"
+                        alt="emotion_analysis" style="width: 30%; height: auto;">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/sequential_action.png"
+                        alt="sequential_action" style="width: 30%; height: auto;">
+                    </div>
+                </div>
+
+                <div class="result-card animate-in delay-2">
+                    <h4>🔮 HARn Insights</h4>
+                    <ul>
+                        <li><strong>Reasoning vs Captioning:</strong> Reasoning models significantly outperform captioning models</li>
+                        <li><strong>Modality Impact:</strong> Depth and IR often superior to RGB for reasoning tasks</li>
+                        <li><strong>Model Scale:</strong> Larger models (7B) consistently outperform smaller ones</li>
+                        <li><strong>Context Understanding:</strong> Critical for next action prediction accuracy</li>
+                    </ul>
+                    <div class="media-container animate-in delay-3">
+                        <img src="https://raw.githubusercontent.com/siyang-jiang/CUHK-X/main/docs/images/HARn.png"
+                        alt="HARn result" style="width: 50%; height: auto;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Citation Section -->
+    <section id="citation" class="section-light">
+        <div class="container">
+            <div class="section-header animate-in">
+                <h2>Citation</h2>
+            </div>
+
+            <p class="animate-in delay-1" style="text-align: center; margin-bottom: 2rem;">
+                If you use CUHK-X in your research, please cite our paper:
+            </p>
+
+            <div class="citation-box animate-in delay-2">
+                <pre>
+@inproceedings{jiang2025cuhkx,
+  title={CUHK-X: A Large-Scale Multimodal Dataset and Benchmark for Human Action Recognition, Understanding and Reasoning},
+  author={Jiang, Siyang and Yuan, Mu and Ji, Xiang and Yang, Bufang and Liu, Zeyu and Xu, Lilin and Li, Yang and He, Yuting and Dong, Liran and Yan, Zhenyu and Jiang, Xiaofan and Gao, Wei and Chen, Hongkai and Xing, Guoliang},
+}</pre>
+            </div>
+
+            <div class="animate-in delay-3">
+                <h3>Contact Information</h3>
+                <p>For dataset access, questions, or collaborations:</p>
+                <ul>
+                    <li><strong>Primary Contact:</strong> <a href="mailto:syjiang@ie.cuhk.edu.hk">syjiang@ie.cuhk.edu.hk</a></li>
+                    <li><strong>Institution:</strong> The Chinese University of Hong Kong</li>
+                    <li><strong>Dataset Request:</strong> Please contact for access information</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acknowledgments Section -->
+    <section id="acknowledgments" class="section-light">
+        <div class="container">
+            <div class="section-header animate-in">
+                <h2>Acknowledgments</h2>
+            </div>
+
+            <div class="animate-in delay-1" style="max-width: 900px; margin: 0 auto;">
+                <div style="background: white; border-radius: var(--radius-lg); padding: 3rem; box-shadow: var(--shadow-md); margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem;">
+                        <div style="background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <span style="font-size: 1.8rem;">🙏</span>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--primary); margin-top: 0;">Our Gratitude</h3>
+                            <p style="color: var(--gray-dark); margin-bottom: 0;">
+                                We thank all participants who contributed to the CUHK-X dataset collection. Special acknowledgments to
+                                the CUHK research team and collaborators who made this comprehensive multimodal dataset possible.
+                                The hardware setup and synchronization infrastructure were crucial for achieving the quality and scale of
+                                CUHK-X.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #f8fafc 0%, #e6f7ff 100%); border-radius: var(--radius-lg); padding: 3rem; box-shadow: var(--shadow-md); border: 2px solid #e6f7ff;">
+                    <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
+                        <div style="background: var(--accent); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <span style="font-size: 1.8rem;">🌍</span>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--accent); margin-top: 0;">Broader Impact</h3>
+                            <p style="color: var(--gray-dark); margin-bottom: 1.5rem;">
+                                CUHK-X aims to advance research in healthcare monitoring, smart environments,
+                                and privacy-preserving human activity understanding. We hope this dataset serves as a valuable resource for
+                                the research community to develop more robust and practical human activity recognition systems.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+
+                <div>
+                    <div class="footer-logo">CUHK-X</div>
+                    <p>A comprehensive multimodal dataset for human action recognition, understanding and reasoning.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#abstract">Abstract</a></li>
+                        <li><a href="#hardware">Hardware</a></li>
+                        <li><a href="#benchmarks">Benchmarks</a></li>
+                        <li><a href="#dataset">Dataset</a></li>
+                        <li><a href="#citation">Citation</a></li>
+                        <li><a href="#acknowledgments">Acknowledgments</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="../paper/cuhkx.pdf" target="_blank">Paper</a></li>
+                        <li><a href="https://aiot-public-dataset-cuhk-x.cuhkaiot.com/">Dataset</a></li>
+                        <li><a href="https://github.com/siyang-jiang/CUHK-X">Code</a></li>
+                        <li><a href="assets/awards/20251104ACPBest_pre.pdf" target="_blank">Award</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>© 2025 CUHK-X Research Team. All rights reserved.</p>
+                <p style="margin-top: 0.5rem;">The Chinese University of Hong Kong</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.textContent = '☰';
+            });
+        });
+
+        // Navbar scroll effect
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Update active nav link
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-links a');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scroll with offset for navbar
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const navbarHeight = navbar.offsetHeight;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 20;
+
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements with animation classes
+        document.querySelectorAll('.animate-in').forEach((el) => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
