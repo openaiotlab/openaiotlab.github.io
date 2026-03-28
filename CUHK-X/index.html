@@ -812,13 +812,14 @@
 
                 <div class="hero-links animate-in delay-3">
                     <a href="https://www.arxiv.org/abs/2512.07136" target="_blank" class="btn btn-primary">📄 Paper</a>
-                    <a href="https://aiot-public-dataset-cuhk-x.cuhkaiot.com/" class="btn btn-secondary">📊 Dataset</a>
-                    <a href="https://github.com/openaiotlab/CUHK-X/" class="btn btn-secondary">💻 Code</a>
+                    <a href="https://aiot-public-dataset-cuhk-x.cuhkaiot.com/?path=%2FCUHK-S" class="btn btn-secondary"> 📚 CUHK-S</a>
+                    <a href="https://aiot-public-dataset-cuhk-x.cuhkaiot.com/" class="btn btn-secondary"> 🗂️ CUHK-X</a>
+                    <a href="https://github.com/openaiotlab/CUHK-X/" class="btn btn-secondary"> Code</a>
                     <a href="assets/awards/20251104ACPBest_pre.pdf" target="_blank" class="btn btn-accent">🏆 Best Presentation Award</a>
                 </div>
                 <p style="color: red; font-size: 0.9rem">
-                Due to preparing a competition,
-                    we release an example data in this version. Will release all data soon!
+                    We have released CUHK-S (sample subset of CUHK-X). As we are preparing the CUHK-X competition, the full CUHK-X dataset will be released soon.
+                    The main differences are that CUHK-S includes only 18 users and excludes the RGB modality. We welcome the community to use it and share feedback.
                 </p>
 
             </div>
@@ -833,7 +834,7 @@
             </div>
             <div class="animate-in delay-1">
                 <p>
-                    <strong>CUHK-X</strong> is a comprehensive multimodal dataset containing <strong>58,445 samples</strong> across <strong>seven modalities</strong> designed for human activity recognition, understanding, and reasoning. Unlike existing datasets that focus primarily on recognition tasks, CUHK-X addresses critical gaps by providing the first multimodal dataset specifically designed for Human Action Understanding (HAU) and Human Action Reasoning (HARn).
+                    <strong>CUHK-X</strong> is a comprehensive multimodal dataset containing <strong>64,342 samples</strong> across <strong>seven modalities</strong> designed for human activity recognition, understanding, and reasoning. Unlike existing datasets that focus primarily on recognition tasks, CUHK-X addresses critical gaps by providing the first multimodal dataset specifically designed for Human Action Understanding (HAU) and Human Action Reasoning (HARn).
                 </p>
                 <p>
                     The dataset was collected from <strong>30 participants</strong> across diverse environments using a prompt-based scene creation approach that leverages Large Language Models (LLMs) to generate logical and spatio-temporal activity descriptions. This ensures both consistency and ecological validity in the collected data.
@@ -1001,7 +1002,7 @@
                 </p>
                 <ul>
                     <li><strong>Seven Synchronized Modalities:</strong> RGB, Infrared (IR), Depth, Thermal, IMU, mmWave Radar, and Skeleton data</li>
-                    <li><strong>Large-Scale:</strong> 58,445 annotated action samples from 30 diverse participants</li>
+                    <li><strong>Large-Scale:</strong> 64,342 annotated action samples from 30 diverse participants</li>
                     <li><strong>Dual Data Structure:</strong> Both singular actions (30,000+ samples) and sequential activities for temporal reasoning</li>
                     <li><strong>Rich Annotations:</strong> LLM-generated captions with human-in-the-loop validation</li>
                     <li><strong>Environmental Diversity:</strong> Indoor and outdoor settings with varying conditions</li>
@@ -1303,6 +1304,12 @@
                                 the CUHK research team and collaborators who made this comprehensive multimodal dataset possible.
                                 The hardware setup and synchronization infrastructure were crucial for achieving the quality and scale of
                                 CUHK-X. The CUHK-X dataset creators obtained approval from an Institutional Review Board (IRB) to conduct their study and collect data from human subjects.
+                            </p>
+                            <p style="color: var(--gray-dark); margin-bottom: 1.5rem;">
+                                We gratefully acknowledge Dr. Jamie Du, Zhijiang Chen, Runju Fan, Yajing Feng, Peipei Li, Yutang Wei,
+                                Jiamin Wu, Yixing Xu, and Danni Yuanyong from Huizhou University, as well as Dr. Yunqi Guo from The Chinese
+                                University of Hong Kong, for their assistance in collecting the dataset. We also thank Ruijun Xia, Bohan Liu,
+                                and Guangyu Chen from The Chinese University of Hong Kong for their help with the paper artifacts.
                             </p>
                             <p style="color: var(--gray-dark); margin-bottom: 0;">
                                 All datasets used in this study were accessed and used under explicit authorization from their respective owners.
